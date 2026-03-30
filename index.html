@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mihir Palasamudram</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f0e;
+    --bg2: #141614;
+    --accent: #a8e6a3;
+    --accent2: #7dd4f0;
+    --accent3: #f0c97d;
+    --text: #e8ebe8;
+    --muted: #6b7a6b;
+    --border: #232823;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 48px 48px;
+    opacity: 0.4;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  main { position: relative; z-index: 1; max-width: 860px; margin: 0 auto; padding: 0 2rem; }
+
+  /* ---- HERO ---- */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 4rem 0 2rem;
+  }
+
+  .hero-label {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards 0.1s;
+  }
+
+  .hero-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(48px, 8vw, 88px);
+    font-weight: 400;
+    line-height: 1.0;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.2s;
+  }
+
+  .hero-name span { color: var(--accent); }
+
+  .hero-desc {
+    margin-top: 1.5rem;
+    font-size: 14px;
+    color: var(--muted);
+    max-width: 480px;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.35s;
+  }
+
+  .hero-tags {
+    margin-top: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.5s;
+  }
+
+  .tag {
+    font-size: 11px;
+    padding: 5px 12px;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .tag:hover { border-color: var(--accent); color: var(--accent); }
+  .tag.green { border-color: #2a3d2a; color: var(--accent); }
+  .tag.blue  { border-color: #1e3040; color: var(--accent2); }
+  .tag.amber { border-color: #3d3020; color: var(--accent3); }
+
+  .scroll-hint {
+    margin-top: 4rem;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.7s;
+  }
+  .scroll-hint::before { content: '↓  '; }
+
+  /* ---- SECTIONS ---- */
+  section {
+    padding: 5rem 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .sec-label {
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 2.5rem;
+  }
+
+  /* ---- ABOUT ---- */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+  }
+  .about-text { font-size: 14px; color: var(--muted); line-height: 1.9; }
+  .about-text strong { color: var(--text); font-weight: 400; }
+  .stat-block { display: flex; flex-direction: column; gap: 1.5rem; }
+  .stat { border-left: 1px solid var(--accent); padding-left: 1rem; }
+  .stat-num { font-family: 'DM Serif Display', serif; font-size: 32px; color: var(--text); line-height: 1; }
+  .stat-desc { font-size: 11px; color: var(--muted); letter-spacing: 0.08em; margin-top: 4px; }
+
+  /* ---- EXPERIENCE ---- */
+  .exp-list { display: flex; flex-direction: column; gap: 0; }
+  .exp-row {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 2rem;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+  }
+  .exp-row:first-child { border-top: 1px solid var(--border); }
+  .exp-date { font-size: 11px; color: var(--muted); padding-top: 3px; letter-spacing: 0.04em; }
+  .exp-company { font-size: 13px; color: var(--accent); margin-bottom: 2px; }
+  .exp-role { font-size: 15px; color: var(--text); font-weight: 400; margin-bottom: 6px; }
+  .exp-detail { font-size: 12px; color: var(--muted); }
+
+  /* ---- PROJECTS ---- */
+  .proj-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); }
+  .proj-card {
+    background: var(--bg);
+    padding: 2rem;
+    transition: background 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .proj-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+  .proj-card:hover { background: var(--bg2); }
+  .proj-card:hover::before { transform: scaleX(1); }
+  .proj-num { font-size: 10px; color: var(--muted); letter-spacing: 0.15em; margin-bottom: 1rem; }
+  .proj-title { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--text); margin-bottom: 0.75rem; line-height: 1.3; }
+  .proj-desc { font-size: 12px; color: var(--muted); line-height: 1.7; }
+  .proj-tags { margin-top: 1rem; display: flex; flex-wrap: wrap; gap: 6px; }
+  .proj-tag { font-size: 10px; color: var(--muted); border: 1px solid var(--border); padding: 2px 8px; border-radius: 2px; }
+
+  /* ---- SKILLS ---- */
+  .skills-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+  .skill-group-title { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; }
+  .skill-item { font-size: 13px; color: var(--muted); padding: 6px 0; border-bottom: 1px solid var(--border); }
+  .skill-item:last-child { border-bottom: none; }
+
+  /* ---- CONTACT ---- */
+  .contact-block {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+  .contact-heading {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(28px, 5vw, 48px);
+    color: var(--text);
+    line-height: 1.1;
+    max-width: 400px;
+  }
+  .contact-heading span { color: var(--accent); }
+  .contact-links { display: flex; flex-direction: column; gap: 0.75rem; }
+  .contact-link {
+    font-size: 13px;
+    color: var(--muted);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: color 0.2s;
+  }
+  .contact-link::before { content: '→'; color: var(--accent); font-size: 12px; }
+  .contact-link:hover { color: var(--text); }
+
+  /* ---- FOOTER ---- */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 0;
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+  }
+
+  /* ---- ANIMATIONS ---- */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 640px) {
+    .about-grid { grid-template-columns: 1fr; }
+    .proj-grid { grid-template-columns: 1fr; }
+    .skills-grid { grid-template-columns: 1fr; }
+    .exp-row { grid-template-columns: 1fr; gap: 0.25rem; }
+    .contact-block { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+<main>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-label">MSc Microelectronics &amp; Microsystems · TUHH Hamburg</div>
+    <h1 class="hero-name">Mihir<br><span>Palasamudram</span></h1>
+    <p class="hero-desc">
+      Embedded systems engineer focused on Edge AI and real-time on-device inference.
+      Building efficient intelligence for resource-constrained hardware.
+    </p>
+    <div class="hero-tags">
+      <span class="tag green">TinyML</span>
+      <span class="tag green">Edge AI</span>
+      <span class="tag blue">FPGA · Verilog</span>
+      <span class="tag blue">SPI · I2C · UART</span>
+      <span class="tag amber">Embedded C/C++</span>
+      <span class="tag amber">TF Lite Micro</span>
+    </div>
+    <div class="scroll-hint">scroll to explore</div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="reveal">
+    <div class="sec-label">01 · About</div>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>Born and raised in <strong>India</strong>, I moved to <strong>Hamburg in 2023</strong> to pursue my Master's at TU Hamburg — chasing colder weather and better circuits. I specialise in Embedded Systems with a strong focus on bringing AI to the edge, where power budgets are tight and latency matters.</p>
+        <br>
+        <p>Currently working at <strong>NXP Semiconductors</strong> on Java Card technology, implementing hardware communication interfaces and automation tooling alongside senior architects.</p>
+        <br>
+        <p>Outside of engineering, I play <strong>basketball</strong>, go <strong>cycling</strong> around Hamburg, and hit the gym when motivation strikes. I also have a deep appreciation for a good TV series — the kind that keeps you up way past a reasonable hour.</p>
+      </div>
+      <div class="stat-block">
+        <div class="stat">
+          <div class="stat-num">3+</div>
+          <div class="stat-desc">years of embedded development</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">3</div>
+          <div class="stat-desc">industry roles · NXP · Siemens · DRDO</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">IN → DE</div>
+          <div class="stat-desc">India · relocated to Hamburg 2023</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">🏀 🚴</div>
+          <div class="stat-desc">basketball · cycling · gym · series</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section class="reveal">
+    <div class="sec-label">02 · Experience</div>
+    <div class="exp-list">
+      <div class="exp-row">
+        <div class="exp-date">Jun 2024 – Present</div>
+        <div>
+          <div class="exp-company">NXP Semiconductors</div>
+          <div class="exp-role">Student Engineer</div>
+          <div class="exp-detail">Java Card technology · SPI, I2C, UART interfaces · Gradle/Groovy automation scripts</div>
+        </div>
+      </div>
+      <div class="exp-row">
+        <div class="exp-date">Nov 2023 – Mar 2024</div>
+        <div>
+          <div class="exp-company">Siemens Gamesa Renewable Energy</div>
+          <div class="exp-role">Working Student</div>
+          <div class="exp-detail">Automated rotor house fastening system · industrial automation setup · system-level troubleshooting</div>
+        </div>
+      </div>
+      <div class="exp-row">
+        <div class="exp-date">Sep – Nov 2022</div>
+        <div>
+          <div class="exp-company">DRDO</div>
+          <div class="exp-role">Research Intern</div>
+          <div class="exp-detail">Digital active phased array radar systems · pulse compression · radar signal processing</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section class="reveal">
+    <div class="sec-label">03 · Projects</div>
+    <div class="proj-grid">
+      <div class="proj-card">
+        <div class="proj-num">01</div>
+        <div class="proj-title">TinyML On-Device Gesture Detection</div>
+        <div class="proj-desc">Deployed a real-time IMU-based gesture classifier on Arduino Nano BLE using TensorFlow Lite Micro. Optimised model size and inference latency for microcontroller constraints.</div>
+        <div class="proj-tags">
+          <span class="proj-tag">TF Lite Micro</span>
+          <span class="proj-tag">Arduino</span>
+          <span class="proj-tag">Edge Impulse</span>
+          <span class="proj-tag">C++</span>
+        </div>
+      </div>
+      <div class="proj-card">
+        <div class="proj-num">02</div>
+        <div class="proj-title">Low-Power FPGA Smart Sensors</div>
+        <div class="proj-desc">Developed SPI and UART communication modules in Verilog. Performed RTL simulation and full synthesis targeting the iCE40-8KHX FPGA board.</div>
+        <div class="proj-tags">
+          <span class="proj-tag">Verilog</span>
+          <span class="proj-tag">iCE40 FPGA</span>
+          <span class="proj-tag">SPI</span>
+          <span class="proj-tag">UART</span>
+        </div>
+      </div>
+      <div class="proj-card">
+        <div class="proj-num">03</div>
+        <div class="proj-title">Analog IC Design · Cadence Virtuoso</div>
+        <div class="proj-desc">Completed full IC design flow including schematic capture, layout, and DC/AC/Transient simulations within Cadence Virtuoso environment.</div>
+        <div class="proj-tags">
+          <span class="proj-tag">Cadence</span>
+          <span class="proj-tag">Analog IC</span>
+          <span class="proj-tag">Layout</span>
+        </div>
+      </div>
+      <div class="proj-card">
+        <div class="proj-num">04</div>
+        <div class="proj-title">Embedded &amp; Automation Projects</div>
+        <div class="proj-desc">Animatronic hand with OpenCV-based control · Arduino parking sensor · LPG loadcell measurement system · UiPath automation workflows.</div>
+        <div class="proj-tags">
+          <span class="proj-tag">OpenCV</span>
+          <span class="proj-tag">Arduino</span>
+          <span class="proj-tag">UiPath</span>
+          <span class="proj-tag">Python</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section class="reveal">
+    <div class="sec-label">04 · Skills</div>
+    <div class="skills-grid">
+      <div>
+        <div class="skill-group-title">Embedded Systems</div>
+        <div class="skill-item">C / C++</div>
+        <div class="skill-item">STM32CubeIDE / MX</div>
+        <div class="skill-item">Arduino</div>
+        <div class="skill-item">Hardware debugging</div>
+      </div>
+      <div>
+        <div class="skill-group-title">Embedded AI</div>
+        <div class="skill-item">TensorFlow Lite Micro</div>
+        <div class="skill-item">Edge Impulse</div>
+        <div class="skill-item">Python</div>
+        <div class="skill-item">On-device inference</div>
+      </div>
+      <div>
+        <div class="skill-group-title">Hardware &amp; Protocols</div>
+        <div class="skill-item">Verilog / FPGA</div>
+        <div class="skill-item">SPI · I2C · UART</div>
+        <div class="skill-item">Cadence Virtuoso</div>
+        <div class="skill-item">MATLAB</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="reveal">
+    <div class="sec-label">05 · Contact</div>
+    <div class="contact-block">
+      <div class="contact-heading">Let's work<br>on something<br><span>real.</span></div>
+      <div class="contact-links">
+        <a class="contact-link" href="mailto:mihir.ger2022@gmail.com">mihir.ger2022@gmail.com</a>
+        <a class="contact-link" href="tel:+4917655693552">+49 176 55693552</a>
+        <a class="contact-link" href="#">LinkedIn</a>
+        <a class="contact-link" href="#">GitHub</a>
+        <a class="contact-link" href="#">Hamburg, Germany</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Mihir Palasamudram · 2025</span>
+    <span>MSc Microelectronics · TUHH</span>
+  </footer>
+
+</main>
+
+<script>
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
